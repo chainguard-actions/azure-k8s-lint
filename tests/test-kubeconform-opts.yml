@@ -1,4 +1,4 @@
-name: Test kubeconform basic linting
+name: Test kubeconform with custom options
 on:
   workflow_dispatch:
 jobs:
@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Run kubeconform lint on valid manifest
+      - name: Run kubeconform lint with verbose option
         id: action
         uses: .
         with:
           manifests: ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/deployment.yaml
           lintType: kubeconform
-          kubeconformOpts: '-summary'
+          kubeconformOpts: '-summary -verbose'
       - name: Assert action succeeded
         run: |
-          echo "Action completed successfully"
+          echo "Action completed successfully with custom kubeconformOpts"
           echo "PASS"
