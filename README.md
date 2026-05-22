@@ -1,1 +1,50 @@
-# azure-k8s-lint
+# Kubernetes lint action
+
+Use this action to lint/validate your manifest files. Refer to the action metadata file for details about all the inputs [action.yml](./action.yml).
+
+## Lint using kubeconform
+
+```yaml
+- uses: azure/k8s-lint@v4
+  with:
+     manifests: |
+        manifests/deployment.yml
+        manifests/service.yml
+     kubeconformOpts: -summary
+```
+
+## Lint using kubernetes server dryrun
+
+Requires Kubectl to be installed (you can use the [Azure/setup-kubectl](https://github.com/Azure/setup-kubectl) action). Server dryrun will communicate with the kuberenetes server, so ensure that KUBECONFIG is available in the context. This works only for kubernetes versions >=1.12
+
+```yaml
+- uses: azure/setup-kubectl@v4
+- uses: azure/k8s-lint@v4
+  with:
+     lintType: dryrun
+     manifests: |
+        manifests/deployment.yml
+        manifests/service.yml
+```
+
+## Contributing
+
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Support
+
+k8s-lint is an open source project that is [**not** covered by the Microsoft Azure support policy](https://support.microsoft.com/en-us/help/2941892/support-for-linux-and-open-source-technology-in-azure). [Please search open issues here](https://github.com/Azure/k8s-lint/issues), and if your issue isn't already represented please [open a new one](https://github.com/Azure/k8s-lint/issues/new/choose). The project maintainers will respond to the best of their abilities.
+
+## Privacy
+
+This Action contacts Chainguard's licensing server to verify authorization. Connection metadata (IP address, GitHub repository identifier, timestamp, and any metadata encoded in the auth token) is transmitted to Chainguard, Inc. even if authorization is denied in accordance with our [Privacy Notice](https://www.chainguard.dev/legal/privacy-notice)
