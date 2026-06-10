@@ -1,4 +1,4 @@
-name: Test kubeconform basic linting
+name: Test kubeconform strict linting
 on:
   workflow_dispatch:
 jobs:
@@ -11,8 +11,9 @@ jobs:
         with:
           manifests: ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/deployment.yaml
           lintType: kubeconform
-          kubeconformOpts: '-summary'
+          kubeconformOpts: '-strict -summary'
+          namespace: default
       - name: Assert action completed successfully
         run: |
-          echo "Action completed without error"
+          echo "Action completed with strict mode without error"
           echo "PASS"
