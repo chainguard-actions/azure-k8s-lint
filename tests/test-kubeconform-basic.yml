@@ -6,14 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Run kubeconform lint on valid manifest
-        id: action
+      - id: action
         uses: .
         with:
-          manifests: ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/deployment.yaml
+          manifests: actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/deployment.yaml
           lintType: kubeconform
           kubeconformOpts: '-summary'
-      - name: Assert action succeeded
+      - name: Assert action completed successfully
         run: |
-          echo "Action completed successfully"
+          echo "Action completed without error"
           echo "PASS"
