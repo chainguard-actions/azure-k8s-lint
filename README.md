@@ -8,7 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v4.0.0 | [`v4.0.0`](https://github.com/chainguard-actions/azure-k8s-lint/tree/v4.0.0) | — |
+| v4.0.0 | [`v4.0.0`](https://github.com/chainguard-actions/azure-k8s-lint/tree/v4.0.0) | [`e4234c5`](https://github.com/azure/k8s-lint/commit/e4234c50ea835112e72b145bdecd00a94bad42fd) |
 
 ## Privacy
 
