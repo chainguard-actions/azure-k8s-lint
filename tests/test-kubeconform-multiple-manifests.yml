@@ -1,0 +1,33 @@
+name: Test kubeconform lint - multiple manifests
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz -C /usr/local/bin kubeconform
+          chmod +x /usr/local/bin/kubeconform
+          kubeconform -v
+
+      - name: Run kubeconform lint on multiple valid manifests
+        id: action
+        uses: .
+        with:
+          manifests: |
+            tests/fixtures/manifests/valid-deployment.yaml
+            tests/fixtures/manifests/valid-service.yaml
+          lintType: kubeconform
+          kubeconformOpts: '-summary'
+
+      - name: Assert action succeeded for multiple manifests
+        run: |
+          echo "PASS: kubeconform lint succeeded on multiple valid manifests"

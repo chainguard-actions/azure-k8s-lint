@@ -1,0 +1,39 @@
+name: Test kubeconform lint - invalid manifest
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar xz -C /usr/local/bin kubeconform
+          chmod +x /usr/local/bin/kubeconform
+          kubeconform -v
+
+      - name: Run kubeconform lint on invalid manifest (expect failure)
+        id: action
+        uses: .
+        with:
+          manifests: tests/fixtures/manifests/invalid-manifest.yaml
+          lintType: kubeconform
+          kubeconformOpts: '-strict'
+        continue-on-error: true
+
+      - name: Assert action failed on invalid manifest
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail on invalid manifest, but got outcome: $OUTCOME"
+            exit 1
+          fi
+          echo "PASS: action correctly failed on invalid manifest"
