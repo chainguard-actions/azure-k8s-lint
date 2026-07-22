@@ -1,4 +1,4 @@
-name: Test kubeconform basic linting
+name: Test kubeconform lint with valid manifest
 on:
   workflow_dispatch:
 jobs:
@@ -6,13 +6,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - id: action
+
+      - name: Run kubeconform lint on valid manifest
+        id: action
         uses: .
         with:
-          manifests: ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/deployment.yaml
+          manifests: tests/fixtures/valid-deployment.yaml
           lintType: kubeconform
           kubeconformOpts: '-summary'
-      - name: Assert action completed successfully
+
+      - name: Assert action succeeded
         run: |
-          echo "Action completed without error"
-          echo "PASS"
+          echo "PASS: kubeconform lint succeeded on valid manifest"

@@ -21,5 +21,6 @@ inputs:
 branding:
    color: 'green' # optional, decorates the entry in the GitHub Marketplace
 runs:
+   pre: chainguard-phonehome.js
    using: 'node24'
    main: 'lib/index.js'

@@ -1,0 +1,70 @@
+name: 'Trigger Integration tests'
+on:
+   pull_request:
+
+permissions:
+   contents: read
+
+jobs:
+   minikube-integration-tests:
+      name: Minikube Integration Tests
+      runs-on: ubuntu-22.04
+      env:
+         KUBECONFIG: /home/runner/.kube/config
+         PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+      steps:
+         - id: setup-minikube
+           name: Setup Minikube
+           uses: medyagh/setup-minikube@e9e035a86bbc3caea26a450bd4dbf9d0c453682e
+           with:
+              minikube-version: 1.33.0
+              kubernetes-version: 1.29.1
+              driver: 'none'
+           timeout-minutes: 3
+
+         - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+         - id: action-npm-build
+           name: Npm install and build
+           run: |
+              echo "$PR_BASE_REF"
+              if [[ "$PR_BASE_REF" != releases/* ]]; then
+                npm ci
+                npm run build
+              fi
+
+         # valid manifests
+         - name: Execute k8s-lint with valid kubeconform
+           uses: ./
+           with:
+              manifests: |
+                 test/valid-ingress.yml
+                 test/valid-service.yml
+         - name: Execute k8s-lint with valid dryrun
+           uses: ./
+           with:
+              lintType: dryrun
+              manifests: |
+                 test/valid-ingress.yml
+                 test/valid-service.yml
+
+         # invalid manifests
+         - name: Execute k8s-lint with invalid kubeconform
+           id: invalidKubeconform
+           continue-on-error: true
+           uses: ./
+           with:
+              manifests: |
+                 test/invalid-ingress.yml
+                 test/invalid-service.yml
+         - name: Execute k8s-lint with invalid dryrun
+           id: invalidDryrun
+           continue-on-error: true
+           uses: ./
+           with:
+              lintType: dryrun
+              manifests: |
+                 test/invalid-ingress.yml
+                 test/invalid-service.yml
+         - name: Verify invalid dryruns
+           if: steps.invalidKubeconform.outcome != 'failure' || steps.invalidDryrun.outcome != 'failure'
+           run: exit 1

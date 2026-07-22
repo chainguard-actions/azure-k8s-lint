@@ -1,4 +1,4 @@
-name: Test kubeconform with multiple manifests
+name: Test kubeconform lint with multiple manifests
 on:
   workflow_dispatch:
 jobs:
@@ -7,17 +7,32 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Create second valid manifest
+        run: |
+          cat > /tmp/service.yaml << 'EOF'
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: nginx-service
+          spec:
+            selector:
+              app: nginx
+            ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 80
+          EOF
+
       - name: Run kubeconform lint on multiple manifests
         id: action
         uses: .
         with:
           manifests: |
-            ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/manifests/deployment.yaml
-            ${{ github.workspace }}/actions/hardened/azure--k8s-lint/v4.0.0/tests/fixtures/manifests/service.yaml
+            tests/fixtures/valid-deployment.yaml
+            /tmp/service.yaml
           lintType: kubeconform
           kubeconformOpts: '-summary'
 
-      - name: Assert action succeeded
+      - name: Assert action succeeded for multiple manifests
         run: |
-          echo "Action completed successfully with multiple manifests"
-          echo "PASS: kubeconform lint ran without errors on multiple manifests"
+          echo "PASS: kubeconform lint succeeded on multiple manifests"

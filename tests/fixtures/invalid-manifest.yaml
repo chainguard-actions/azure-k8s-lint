@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad-deployment
+spec:
+  replicas: "not-a-number"
+  selector:
+    matchLabels:
+      app: bad
+  template:
+    metadata:
+      labels:
+        app: bad
+    spec:
+      containers:
+      - name: bad
+        image: nginx:latest
+        invalidField: this-should-not-be-here
+        ports:
+        - containerPort: "not-a-port"
