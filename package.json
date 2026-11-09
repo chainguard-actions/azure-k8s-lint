@@ -1,0 +1,38 @@
+{
+   "name": "k8s-lint-action",
+   "version": "4.1.0",
+   "private": true,
+   "type": "module",
+   "main": "lib/index.js",
+   "scripts": {
+      "build": "tsc --noEmit && node esbuild.config.mjs",
+      "check": "tsc --noEmit",
+      "test": "vitest run",
+      "test-coverage": "vitest run --coverage",
+      "format": "prettier --write .",
+      "format-check": "prettier --check .",
+      "prepare": "husky"
+   },
+   "keywords": [
+      "actions"
+   ],
+   "author": "GitHub",
+   "license": "MIT",
+   "engines": {
+      "npm": ">=11.10.0"
+   },
+   "dependencies": {
+      "@actions/core": "^3.0.1",
+      "@actions/exec": "^3.0.0",
+      "@actions/tool-cache": "^4.0.0",
+      "husky": "^9.1.7"
+   },
+   "devDependencies": {
+      "@types/node": "^26.6.5",
+      "@vitest/coverage-v8": "^5.0.3",
+      "esbuild": "^0.28.2",
+      "prettier": "^3.9.10",
+      "typescript": "^7.0.2",
+      "vitest": "^5.0.3"
+   }
+}
